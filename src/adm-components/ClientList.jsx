@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Context } from '../js/store/appContext';
 import './ClientList.css';
+import GenerateCardModal from './GenerateCardModal';
 
 const ClientList = () => {
   const { store, actions } = useContext(Context);
   const [reload, setReload] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   useEffect(() => {
     actions.getCustomers();
@@ -17,13 +19,13 @@ const ClientList = () => {
   // Handler para eliminar
   const handleEliminar = (customer) => {
     console.log("Eliminar", customer);
-    // Acá va la lógica para eliminar
+    // Lógica para eliminar
   };
 
-  // Handler para generar tarjeta
+  // Handler para generar tarjeta: abre el modal
   const handleGenerarTarjeta = (customer) => {
     console.log("Generar Tarjeta", customer);
-    // Acá va la lógica para generar tarjeta
+    setSelectedCustomer(customer);
   };
 
   // Handler para dar baja o alta (toggle)
@@ -87,6 +89,12 @@ const ClientList = () => {
       <h2>Lista de Clientes</h2>
       {renderCustomerList("Activos", activeCustomers)}
       {renderCustomerList("Inactivos", inactiveCustomers)}
+      {selectedCustomer && (
+        <GenerateCardModal 
+          customer={selectedCustomer} 
+          onClose={() => setSelectedCustomer(null)} 
+        />
+      )}
     </div>
   );
 };
