@@ -14,6 +14,37 @@ const getState = ({ getStore, getActions, setStore }) => {
             dataEstadisticas: {}
         },
         actions: {
+            stateCustomer: async (customer, actionType) => {
+                // Si la acción es "dar_baja", seteamos state en false, sino en true
+                const newState = actionType === "dar_baja" ? false : true;
+                const payload = {
+                    state: newState,
+                    customer_id: customer.id
+                };
+                const apiKey = process.env.REACT_APP_API_KEY;
+
+                try {
+                    const response = await fetch('https://petroclub-back.onrender.com/complete_customer', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': apiKey,
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        console.error("Error actualizando el estado del customer:", response);
+                        return false;
+                    }
+                    // Si todo sale bien, devolvemos true
+                    return true;
+                } catch (error) {
+                    console.error("Error en la acción stateCustomer:", error);
+                    return false;
+                }
+            },
+
             getCustomers: async () => {
                 try {
                     const apiKey = process.env.REACT_APP_API_KEY;
@@ -196,6 +227,18 @@ const getState = ({ getStore, getActions, setStore }) => {
                             'Authorization': apiKey
                         }
                     });
+
+                    // Si el response es 403, chequeamos si el error corresponde a baja del customer
+                    if (response.status === 403) {
+                        const errorData = await response.json();
+                        if (errorData.error === 'El customer se encuentra dado de baja.') {
+                            alert("El usuario se encuentra dado de baja");
+                            return false;
+                        } else {
+                            throw new Error("Error 403 inesperado");
+                        }
+                    }
+
                     if (!response.ok) {
                         throw new Error("Algo salió mal");
                     }

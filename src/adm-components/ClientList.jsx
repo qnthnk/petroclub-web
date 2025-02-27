@@ -1,32 +1,46 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Context } from '../js/store/appContext';
 import './ClientList.css';
 
 const ClientList = () => {
   const { store, actions } = useContext(Context);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     actions.getCustomers();
-  }, []);
+  }, [reload]);
 
   // Filtramos los clientes según su estado
   const activeCustomers = store.customers?.filter(customer => customer.state === true) || [];
   const inactiveCustomers = store.customers?.filter(customer => customer.state === false) || [];
 
-  // Handlers para cada botón (acá se puede agregar la lógica necesaria)
-  const handleDarBaja = (customer) => {
-    console.log("Dar baja", customer);
-    // Acá va la lógica para dar baja
-  };
-
+  // Handler para eliminar
   const handleEliminar = (customer) => {
     console.log("Eliminar", customer);
     // Acá va la lógica para eliminar
   };
 
+  // Handler para generar tarjeta
   const handleGenerarTarjeta = (customer) => {
     console.log("Generar Tarjeta", customer);
     // Acá va la lógica para generar tarjeta
+  };
+
+  // Handler para dar baja o alta (toggle)
+  const toggleStateCustomer = async (customer, actionType) => {
+    const confirmMsg = actionType === "dar_baja" 
+      ? "¿Estás seguro que querés dar de baja al usuario?" 
+      : "¿Estás seguro que querés dar de alta al usuario?";
+      
+    if (!window.confirm(confirmMsg)) return; // Si cancela, no hacemos nada
+
+    const result = await actions.stateCustomer(customer, actionType);
+    if (result) {
+      // Si todo salió bien, cambiamos el flag para refrescar la lista
+      setReload(!reload);
+    } else {
+      alert("Algo no salió como se esperaba.");
+    }
   };
 
   // Función para renderizar una sección de clientes con título
@@ -45,9 +59,21 @@ const ClientList = () => {
                 <span className="customer-curp" title={customer.curp}>{customer.curp}</span>
               </div>
               <div className="customer-actions">
-                <button className="btn baja-btn" onClick={() => handleDarBaja(customer)}>Dar baja</button>
-                <button className="btn eliminar-btn" onClick={() => handleEliminar(customer)}>Eliminar</button>
-                <button className="btn tarjeta-btn" onClick={() => handleGenerarTarjeta(customer)}>Generar Tarjeta</button>
+                {customer.state ? (
+                  <button className="btn baja-btn" onClick={() => toggleStateCustomer(customer, "dar_baja")}>
+                    Dar baja
+                  </button>
+                ) : (
+                  <button className="btn alta-btn" onClick={() => toggleStateCustomer(customer, "dar_alta")}>
+                    Dar alta
+                  </button>
+                )}
+                <button className="btn eliminar-btn" onClick={() => handleEliminar(customer)}>
+                  Eliminar
+                </button>
+                <button className="btn tarjeta-btn" onClick={() => handleGenerarTarjeta(customer)}>
+                  Generar Tarjeta
+                </button>
               </div>
             </div>
           ))}
