@@ -159,8 +159,6 @@ const Capture = () => {
           curp ? (
             <>
               Tarjeta detectada: {curp}
-              <br />
-              {store.current_customer_name} {store.current_customer_lastname_f}
             </>
           ) : "Esperando..."
         ) : "La funcionalidad NFC no está disponible en este navegador."}
