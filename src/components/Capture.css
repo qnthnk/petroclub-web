@@ -130,3 +130,10 @@
 .cancel-btn:hover {
   background-color: #c9302c;
 }
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: whitesmoke; /* Forzamos el color para que se vea */
+}
