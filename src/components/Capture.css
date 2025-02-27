@@ -132,8 +132,6 @@
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: whitesmoke; /* Forzamos el color para que se vea */
+  color: whitesmoke !important;
+  -webkit-text-fill-color: whitesmoke !important;
 }
