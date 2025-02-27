@@ -246,6 +246,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
 
                     let data = await response.json();
+                    console.log("Esta es la data entrante en el precheck: ",data)
                     localStorage.setItem('access_token_transaction', data.access_token);
                     // Actualizamos el store, usando el store recuperado (que ya tiene o no la info)
                     setStore({ ...store, access_token_transaction: data.access_token, current_customer_name:data.name, current_customer_lastname_f:data.lastname_f });
