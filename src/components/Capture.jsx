@@ -155,11 +155,15 @@ const Capture = () => {
         </div>
       )}
       <p className="status-text">
-        {canRead
-          ? curp
-            ? `Tarjeta detectada: ${curp}`
-            : "Esperando..."
-          : "La funcionalidad NFC no está disponible en este navegador."}
+        {canRead ? (
+          curp ? (
+            <>
+              Tarjeta detectada: {curp}
+              <br />
+              {store.current_customer_name} {store.current_customer_lastname_f}
+            </>
+          ) : "Esperando..."
+        ) : "La funcionalidad NFC no está disponible en este navegador."}
       </p>
     </div>
   );

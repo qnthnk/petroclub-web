@@ -11,7 +11,9 @@ const getState = ({ getStore, getActions, setStore }) => {
             user: { admin: "", curp: "", email: "", id: "", username: "", terminal: "" },
             trigger: false,
             access_token_transaction: "",
-            dataEstadisticas: {}
+            dataEstadisticas: {},
+            current_customer_name:"",
+            current_customer_lastname_f:""
         },
         actions: {
             stateCustomer: async (customer, actionType) => {
@@ -242,11 +244,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                     if (!response.ok) {
                         throw new Error("Algo salió mal");
                     }
-                    console.log("Si leo esto es porque saltamos el error");
+
                     let data = await response.json();
                     localStorage.setItem('access_token_transaction', data.access_token);
                     // Actualizamos el store, usando el store recuperado (que ya tiene o no la info)
-                    setStore({ ...store, access_token_transaction: data.access_token });
+                    setStore({ ...store, access_token_transaction: data.access_token, current_customer_name:data.name, current_customer_lastname_f:data.lastname_f });
                     return true;
                 } catch (error) {
                     console.error(error);
